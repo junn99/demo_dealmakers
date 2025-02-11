@@ -84,7 +84,7 @@ class NegotiationBot:
         elif self.current_step == 2:
             self.current_price = self.min_price
             return f"""
-            혹시 {self.current_price}원도 어렵다면, 가능한 가격대를 말씀해 주실 수 있을까요? 서로 만족할 수 있는 방안을 찾아보면 좋겠습니다.
+            저희도 내부적으로 검토해 본 결과, {self.current_price}원 수준이라면 조정이 가능할 것 같습니다. 이 가격으로 협의될 수 있을까요?
             """
 
         else:

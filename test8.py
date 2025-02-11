@@ -35,25 +35,19 @@ BRAND_INFO = [
     """AquaDew는 2023년 연 매출 3억 원을 기록하며 전년 대비 150% 성장하였습니다. 이는 우리의 대표 제품인 '딥 모이스처 크림'이 출시 이후 15,000개 이상 판매된 결과입니다. 
     이러한 성과는 20~40대 여성 소비층을 중심으로 한 강력한 시장 반응을 반영하며, 이는 귀사와의 협력을 통해 더욱 확대될 것입니다. 우리의 성장세는 귀사의 생산량 증가로 이어질 것이며, 이는 귀사의 수익성 향상에 기여할 것입니다. 
 제조사에서 초기 단가를 맞춰주시면, 지속적인 발주 증가와 함께 장기적인 협력을 이어갈 수 있습니다.""",
-
     """AquaDew는 소셜미디어를 활용한 홍보 전략을 구축하고 있으며, 특히 수분 케어 관련 뷰티 인플루언서와의 협업을 통해 콘텐츠 마케팅을 강화할 예정입니다. 
     이러한 마케팅 계획은 제품의 인지도를 높이고 판매량을 증가시킬 것입니다. 귀사는 이러한 마케팅 활동의 수혜를 받아 더 많은 주문을 받을 수 있을 것입니다.""",
-    
     """AquaDew는 향후 2년 내에 일본, 중국, 동남아 시장 진출을 목표로 하고 있습니다. 이러한 글로벌 확장은 귀사와의 장기적인 협력 관계를 통해 이루어질 것이며,
     이는 귀사의 국제적 입지를 강화하는 데 기여할 것입니다. 우리의 글로벌 시장 진출은 귀사의 생산량 증가와 함께 안정적인 수익을 보장할 것입니다.""",
-
     """AquaDew는 오프라인 매장 확대를 위한 전략적 파트너십을 구축하고 있습니다. 이는 귀사와의 협력을 통해 오프라인 유통망을 강화하고, 
     더 많은 소비자에게 제품을 제공할 수 있는 기회를 창출할 것입니다. 
     오프라인 매장 확대는 귀사의 생산량 증가로 이어질 것이며, 이는 귀사의 수익성 향상에 기여할 것입니다.""",
-
     """AquaDew는 보습과 관련된 최신 연구 결과를 지속적으로 반영하고 있으며, 브랜드 신뢰도를 높이기 위해 전문 피부과와 협업도 계획 중입니다. 
     이러한 연구와 협업은 제품의 품질을 높이고, 
     소비자 신뢰를 강화하여 판매량 증가로 이어질 것입니다. 귀사는 이러한 품질 향상의 혜택을 받아 더 많은 주문을 받을 수 있을 것입니다.""",
-
     """AquaDew의 철학은 ‘수분을 지키는 것이 피부를 지키는 것이다’입니다. 이러한 철학은 우리의 모든 제품 개발에 반영되어 있으며, 
     이는 귀사와의 협력을 통해 더욱 강화될 것입니다. 
     우리의 철학은 제품의 차별성을 높이고, 소비자에게 더 큰 가치를 제공하여 판매량 증가로 이어질 것입니다.""",
-
     """AquaDew의 조민혁 대표는 화장품 업계에서 15년 이상의 경력을 쌓았으며, 그의 연구 논문은 국제 화장품 학회에서 발표되었습니다. 
     이러한 전문성은 브랜드의 신뢰성을 높이고, 귀사와의 협력을 통해 더욱 강화될 것입니다. 
     우리의 전문성은 제품의 품질을 높이고, 소비자 신뢰를 강화하여 판매량 증가로 이어질 것입니다.""",
@@ -83,21 +77,19 @@ class NegotiationBot:
 
             안내드린 PDF 파일 내용 내 컨셉의 제품을 MOQ 3,000개와 3개월 이내에 제품 출시를 목표하고 있습니다.
 
-            이에 먼저 저희의 MOQ 및 3개월 이내에 맞춘 자사의 목표 단가는 2,600원 입니다. 이에 맞춰주실 수 있으실까요?
-
-            **1단계 제안**: {self.current_price}원에 거래하시겠습니까?"""
+            이에 먼저 저희의 MOQ 및 3개월 이내에 맞춘 자사의 목표 단가는 2,600원 입니다. 
+            
+            {self.current_price}원에 맞춰주실 수 있을까요?"""
 
         elif self.current_step == 2:
             self.current_price = self.min_price
-            return f"**2단계 제안**: {self.current_price}원에 거래하시겠습니까?"
+            return f"""
+            {self.current_price}원에 맞춰주실 수 있을까요?"""
 
         else:
             if self.current_price is None:
                 self.current_price = self.min_price
             info_idx = self.current_step - 3
-            card = ""
-            if 0 <= info_idx < len(BRAND_INFO):
-                card = "\n\n" + BRAND_INFO[info_idx]
 
             new_price = calculate_price(
                 current_price=self.current_price,
@@ -111,28 +103,40 @@ class NegotiationBot:
             if self.user_price is not None and new_price >= self.user_price:
                 self.negotiation_finished = True
                 return f"""
-✅ 협상 종료
+    ✅ 협상 종료
 
-MOQ : 3000개 
+    MOQ : 3000개 
 
-납품 기한 : 3개월 이내
+    납품 기한 : 3개월 이내
 
-단가 : **{self.user_price}원**으로 협상을 마무리합니다.
-"""
+    단가 : **{self.user_price}원**으로 협상을 마무리합니다.
+    """
             else:
                 self.current_price = new_price
-                return f"**{self.current_step}단계 제안**: {self.current_price}원{card}\n\n거래하시겠습니까?"
+                response = ""
+
+                # 초기 3단계까지만 상위 % 표시
+                if 3 <= self.current_step <= int(self.N / 2) + 2:
+                    percentage = ((self.current_step - 2) * 100) / 9
+                    response += f"📊 현재 제안 가격은 상위 **{percentage:.1f}%** 수준입니다.\n\n"
+
+                if 0 <= info_idx < len(BRAND_INFO):
+                    response += f"{BRAND_INFO[info_idx]}\n\n"
+
+                response += f"**{self.current_price}**원에 맞춰주실 수 있을까요?"
+
+                return response
 
     def accept(self):
         self.negotiation_finished = True
         return f"""
-✅ 협상 종료
+협상이 종료되었습니다.
 
-MOQ : 3000개
+✅ 최종 협상 금액: {self.current_price}원
 
-납품 기한 : 3개월 이내
+✅ MOQ: 3,000개
 
-단가 : **{self.current_price}원**으로 협상을 마무리합니다.
+✅ 납품 기한: 3개월 이내
 """
 
     def reject(self):
@@ -141,7 +145,10 @@ MOQ : 3000개
             return self.propose_price()
         elif self.current_step == 2:
             self.waiting_for_user_price = True
-            return "2단계 제안을 거절하셨습니다.\n\n" "원하시는 단가를 입력하세요."
+            return (
+                "현재 저희 조건에서 조정할 수 있는 부분을 검토해보겠습니다. \n\n혹시 최종적으로 받아들이실 수 있는 가격대를 알려주실 수 있을까요?\n\n"
+                "원하시는 단가를 입력해주세요."
+            )
         elif 3 <= self.current_step < 9:
             self.current_step += 1
             return self.propose_price()
@@ -156,24 +163,22 @@ MOQ : 3000개
         self.waiting_for_user_price = False
         self.current_step = 3
         self.current_price = None
-        return (
-            f"사용자 희망가 {val}원 입력 받았습니다.\n\n"
-            "3단계부터 계속 협상합니다.\n\n"
-            f"{self.propose_price()}"
-        )
+        return f"사용자 희망가 {val}원 입력 받았습니다.\n\n" f"{self.propose_price()}"
 
     def process_final_price(self, val):
         self.final_user_price = val
         self.waiting_for_final_price = False
         self.negotiation_finished = True
         return f"""
-🚫 최종(9)단계까지 거절하여 협상을 단가 : **{self.final_user_price}원**으로 종료합니다.
+다시 한 번 고려해주셔서 감사합니다.
 
-MOQ : 3000개
+협상 마무리하겠습니다.
 
-납품 기한 : 3개월 이내
+✅ 최종 협상 금액: {self.final_user_price}원
 
-⚠️ 매치될 확률이 낮을 수 있습니다.
+✅ MOQ: 3,000개
+
+✅ 납품 기한: 3개월 이내
 """
 
 
@@ -209,7 +214,9 @@ def main():
 
     if bot.negotiation_finished:
         with st.chat_message("assistant"):
-            stream_text("협상이 종료되었습니다. 감사합니다.")
+            stream_text(
+                f"이 조건으로 협상을 마무리하겠습니다. \n\n원활한 진행을 위해 이후 절차도 함께 협의해 나가길 기대합니다. \n\n감사합니다."
+            )
         st.stop()
 
     if bot.waiting_for_final_price:
